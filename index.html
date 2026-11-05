@@ -1,373 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Yılan Oyunu (Classic Edition)</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
-        body {
-            background-color: #0d0f18;
-            color: #00ff66;
-            font-family: 'Press Start 2P', monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        h1 {
-            font-size: 24px;
-            color: #ff0055;
-            text-shadow: 3px 3px #000, 0 0 10px #ff0055;
-            margin-bottom: 15px;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        .score-board {
-            display: flex;
-            justify-content: space-between;
-            width: 400px;
-            max-width: 100%;
-            margin-bottom: 15px;
-            font-size: 14px;
-            background: #161b26;
-            padding: 12px 20px;
-            border: 3px solid #00ff66;
-            box-shadow: 4px 4px 0px #005522;
-        }
-
-        .game-container {
-            position: relative;
-            border: 4px solid #00ff66;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3), inset 0 0 15px rgba(0,0,0,0.8);
-            background-color: #05070a;
-        }
-
-        canvas {
-            display: block;
-            background-color: #05070a;
-        }
-
-        .controls-hint {
-            margin-top: 15px;
-            font-size: 10px;
-            color: #88aaff;
-            text-align: center;
-            line-height: 1.6;
-        }
-
-        /* Retro Mobile Touch Controls */
-        .dpad {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 60px);
-            grid-template-rows: repeat(3, 60px);
-            gap: 5px;
-        }
-
-        .dbtn {
-            background: #1f293d;
-            border: 2px solid #00ff66;
-            color: #00ff66;
-            font-size: 18px;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 3px 3px 0 #000;
-            active: translate(2px, 2px);
-        }
-
-        .dbtn:active {
-            background: #00ff66;
-            color: #000;
-        }
-
-        #up { grid-column: 2; grid-row: 1; }
-        #left { grid-column: 1; grid-row: 2; }
-        #right { grid-column: 3; grid-row: 2; }
-        #down { grid-column: 2; grid-row: 3; }
-
-        .game-over-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #ff0055;
-            display: none;
-        }
-
-        .game-over-overlay h2 {
-            font-size: 22px;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px #fff;
-        }
-
-        .restart-btn {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #00ff66;
-            color: #000;
-            font-family: inherit;
-            font-size: 12px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 3px 3px 0 #fff;
-        }
-
-        .restart-btn:hover {
-            background: #fff;
-            color: #000;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#09132f">
+<title>Kafa Yılanı</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <h1>RETRO YILAN</h1>
-
-    <div class="score-board">
-        <div>SKOR: <span id="score">0</span></div>
-        <div>EN YÜKSEK: <span id="highScore">0</span></div>
-    </div>
-
-    <div class="game-container">
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
-        <div class="game-over-overlay" id="gameOverOverlay">
-            <h2>OYUN BİTTİ!</h2>
-            <button class="restart-btn" onclick="resetGame()">TEKRAR OYNA</button>
-        </div>
-    </div>
-
-    <div class="controls-hint">
-        YÖN TUŞLARI / WASD İLE OYNA<br>
-        BOŞLUK TUŞU: PAUSE
-    </div>
-
-    <div class="dpad">
-        <button class="dbtn" id="up">▲</button>
-        <button class="dbtn" id="left">◄</button>
-        <button class="dbtn" id="right">►</button>
-        <button class="dbtn" id="down">▼</button>
-    </div>
-
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        const scoreEl = document.getElementById("score");
-        const highScoreEl = document.getElementById("highScore");
-        const gameOverOverlay = document.getElementById("gameOverOverlay");
-
-        const gridSize = 20;
-        const tileCount = canvas.width / gridSize;
-
-        // Base64 Images loaded from input
-        const faceData = [];
-        const loadedImages = [];
-        let imagesReady = 0;
-
-        faceData.forEach((src) => {
-            const img = new Image();
-            img.src = src;
-            img.onload = () => {
-                imagesReady++;
-            };
-            loadedImages.push(img);
-        });
-
-        let snake = [
-            { x: 10, y: 10 },
-            { x: 10, y: 11 },
-            { x: 10, y: 12 }
-        ];
-
-        let food = { x: 5, y: 5 };
-        let dx = 0;
-        let dy = -1;
-        let score = 0;
-        let highScore = localStorage.getItem("snake_high_score") || 0;
-        highScoreEl.innerText = highScore;
-
-        let gameLoopInterval = null;
-        let isPaused = false;
-        let gameOver = false;
-
-        function placeFood() {
-            food.x = Math.floor(Math.random() * tileCount);
-            food.y = Math.floor(Math.random() * tileCount);
-            // Check if food spawns on snake body
-            snake.forEach(segment => {
-                if (segment.x === food.x && segment.y === food.y) {
-                    placeFood();
-                }
-            });
-        }
-
-        function drawGrid() {
-            ctx.strokeStyle = "#111827";
-            ctx.lineWidth = 1;
-            for (let i = 0; i < canvas.width; i += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, canvas.height);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(0, i);
-                ctx.lineTo(canvas.width, i);
-                ctx.stroke();
-            }
-        }
-
-        function draw() {
-            // Clear screen
-            ctx.fillStyle = "#05070a";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            drawGrid();
-
-            // Draw Food (Classic retro style blinking apple)
-            ctx.fillStyle = "#ff0055";
-            ctx.shadowColor = "#ff0055";
-            ctx.shadowBlur = 8;
-            ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
-            ctx.shadowBlur = 0;
-
-            // Draw Snake Segments with photos
-            snake.forEach((segment, index) => {
-                const x = segment.x * gridSize;
-                const y = segment.y * gridSize;
-
-                if (loadedImages.length > 0) {
-                    const imgIndex = index % loadedImages.length;
-                    const img = loadedImages[imgIndex];
-
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(x + gridSize / 2, y + gridSize / 2, gridSize / 2 - 1, 0, Math.PI * 2);
-                    ctx.clip();
-                    ctx.drawImage(img, x, y, gridSize, gridSize);
-                    ctx.restore();
-
-                    // Border around faces
-                    ctx.strokeStyle = index === 0 ? "#00ff66" : "#ffcc00";
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
-                } else {
-                    ctx.fillStyle = index === 0 ? "#00ff66" : "#00cc55";
-                    ctx.fillRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
-                }
-            });
-        }
-
-        function update() {
-            if (isPaused || gameOver) return;
-
-            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-
-            // Wall Collision Check
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-                handleGameOver();
-                return;
-            }
-
-            // Self Collision Check
-            for (let i = 0; i < snake.length; i++) {
-                if (snake[i].x === head.x && snake[i].y === head.y) {
-                    handleGameOver();
-                    return;
-                }
-            }
-
-            snake.unshift(head);
-
-            // Eat Food
-            if (head.x === food.x && head.y === food.y) {
-                score += 10;
-                scoreEl.innerText = score;
-                if (score > highScore) {
-                    highScore = score;
-                    highScoreEl.innerText = highScore;
-                    localStorage.setItem("snake_high_score", highScore);
-                }
-                placeFood();
-            } else {
-                snake.pop();
-            }
-        }
-
-        function handleGameOver() {
-            gameOver = true;
-            gameOverOverlay.style.display = "flex";
-            clearInterval(gameLoopInterval);
-        }
-
-        function resetGame() {
-            snake = [
-                { x: 10, y: 10 },
-                { x: 10, y: 11 },
-                { x: 10, y: 12 }
-            ];
-            dx = 0;
-            dy = -1;
-            score = 0;
-            scoreEl.innerText = score;
-            gameOver = false;
-            isPaused = false;
-            gameOverOverlay.style.display = "none";
-            placeFood();
-            clearInterval(gameLoopInterval);
-            gameLoopInterval = setInterval(() => {
-                update();
-                draw();
-            }, 120);
-        }
-
-        // Controls
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
-                if (dy !== 1) { dx = 0; dy = -1; }
-            } else if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
-                if (dy !== -1) { dx = 0; dy = 1; }
-            } else if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
-                if (dx !== 1) { dx = -1; dy = 0; }
-            } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
-                if (dx !== -1) { dx = 1; dy = 0; }
-            } else if (e.code === "Space") {
-                isPaused = !isPaused;
-            }
-        });
-
-        // Touch D-Pad Controls
-        document.getElementById("up").onclick = () => { if (dy !== 1) { dx = 0; dy = -1; } };
-        document.getElementById("down").onclick = () => { if (dy !== -1) { dx = 0; dy = 1; } };
-        document.getElementById("left").onclick = () => { if (dx !== 1) { dx = -1; dy = 0; } };
-        document.getElementById("right").onclick = () => { if (dx !== -1) { dx = 1; dy = 0; } };
-
-        // Start Game Loop
-        placeFood();
-        gameLoopInterval = setInterval(() => {
-            update();
-            draw();
-        }, 120);
-    </script>
+<main class="game-shell">
+<header class="topbar">
+<div class="stat"><span>SKOR</span><strong id="score">0000</strong></div>
+<div class="stat level"><span>SEVİYE</span><strong id="level">01</strong></div>
+<div class="stat best"><span>REKOR</span><strong id="best">0000</strong></div>
+</header>
+<section class="board-wrap">
+<canvas id="game" aria-label="Kafa Yılanı oyunu"></canvas>
+<div id="overlay" class="overlay"><div class="panel">
+<h1 id="overlay-title">KAFA YILANI</h1>
+<p id="overlay-text">Kafaları topla, her kafada 1 kare büyü!</p>
+<button id="start-btn">OYUNA BAŞLA</button>
+</div></div>
+</section>
+<div class="controls-row">
+<button id="pause-btn" class="secondary">Ⅱ DURAKLAT</button>
+<span>Her kafa = +1 kare</span>
+<button id="restart-btn" class="secondary">↻ YENİLE</button>
+</div>
+<div class="mobile-controls" aria-label="Dokunmatik yön tuşları">
+<button data-dir="up" aria-label="Yukarı">▲</button>
+<div class="middle-controls">
+<button data-dir="left" aria-label="Sol">◀</button>
+<button data-dir="down" aria-label="Aşağı">▼</button>
+<button data-dir="right" aria-label="Sağ">▶</button>
+</div></div>
+<p class="hint">Bilgisayarda yön tuşları / WASD • Telefonda ekrandaki tuşlar</p>
+</main>
+<script src="script.js"></script>
 </body>
 </html>
