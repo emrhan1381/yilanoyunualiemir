@@ -2,7 +2,7 @@
 "use strict";
 const canvas=document.getElementById("game");
 const ctx=canvas && canvas.getContext("2d");
-const COLS=25, ROWS=15, CELL=32;
+const COLS=20, ROWS=12, CELL=40;
 if(!canvas || !ctx) { console.error("Oyun alanı bulunamadı."); return; }
 canvas.width=COLS*CELL; canvas.height=ROWS*CELL;
 const $=id=>document.getElementById(id);
@@ -16,7 +16,7 @@ function readBest(){try{return Number(localStorage.getItem("kafaYilaniRekor")||0
 function saveBest(value){try{localStorage.setItem("kafaYilaniRekor",String(value));}catch(e){}}
 let snake=[{x:7,y:7},{x:6,y:7},{x:5,y:7}];
 let direction={x:1,y:0}, nextDirection={x:1,y:0};
-let food={x:15,y:7,portrait:0}, score=0, best=readBest();
+let food={x:15,y:7,portrait:1}, score=0, best=readBest();
 let running=false, paused=false, timer=null;
 bestEl.textContent=String(best).padStart(4,"0");
 
@@ -26,7 +26,7 @@ function randomCell(){
  while(snake.some(s=>s.x===p.x&&s.y===p.y));
  return p;
 }
-function spawnFood(){food={...randomCell()};}
+function spawnFood(){food={...randomCell(),portrait:1+Math.floor(Math.random()*4)};}
 function updateStats(){
  scoreEl.textContent=String(score).padStart(4,"0");
  levelEl.textContent=String(Math.floor(score/5)+1).padStart(2,"0");
@@ -78,17 +78,22 @@ function draw(){
   ctx.strokeStyle="#172747";ctx.lineWidth=1;
   ctx.strokeRect(x*CELL+.5,y*CELL+.5,CELL-1,CELL-1);
  }
- // Yem: fotoğraf değil, klasik retro elma.
+ // Yem: gövdede kullanılmayan Aliemir fotoğraflarından biri.
  const fx=food.x*CELL, fy=food.y*CELL;
- ctx.fillStyle="#ff4966";
- ctx.fillRect(fx+8,fy+8,16,17);
- ctx.fillRect(fx+5,fy+12,22,11);
- ctx.fillStyle="#ff8a9b";
- ctx.fillRect(fx+9,fy+10,4,5);
- ctx.fillStyle="#73db55";
- ctx.fillRect(fx+16,fy+5,5,4);
- ctx.fillStyle="#70452e";
- ctx.fillRect(fx+15,fy+4,3,5);
+ if(portraitSheet && portraitSheet.complete && portraitSheet.naturalWidth>=320){
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(fx+2,fy+2,CELL-4,CELL-4);
+  ctx.clip();
+  ctx.drawImage(portraitSheet,food.portrait*64,0,64,64,fx+2,fy+2,CELL-4,CELL-4);
+  ctx.restore();
+  ctx.strokeStyle="#ffe5a3";ctx.lineWidth=2;
+  ctx.strokeRect(fx+1,fy+1,CELL-2,CELL-2);
+ }else{
+  ctx.fillStyle="#ff6b91";ctx.fillRect(fx+2,fy+2,CELL-4,CELL-4);
+  ctx.fillStyle="#172747";ctx.font="bold 22px monospace";ctx.textAlign="center";
+  ctx.fillText("A",fx+CELL/2,fy+CELL/2+7);
+ }
  // Yılanın başı: dil çıkaran Aliemir fotoğrafı (ilk portre).
  // Gövde: diğer Aliemir fotoğrafları; her parça bir kare.
  snake.forEach((part,i)=>{
