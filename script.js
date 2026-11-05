@@ -14,9 +14,9 @@ if(!startBtn || !overlay || !pauseBtn) { console.error("Oyun arayüzü eksik.");
 
 function readBest(){try{return Number(localStorage.getItem("kafaYilaniRekor")||0)||0;}catch(e){return 0;}}
 function saveBest(value){try{localStorage.setItem("kafaYilaniRekor",String(value));}catch(e){}}
-let snake=[{x:7,y:7},{x:6,y:7},{x:5,y:7}];
+let snake=[{x:5,y:3},{x:4,y:3},{x:3,y:3}];
 let direction={x:1,y:0}, nextDirection={x:1,y:0};
-let food={x:15,y:7,portrait:1}, score=0, best=readBest();
+let food={x:9,y:3,portrait:1}, score=0, best=readBest();
 let running=false, paused=false, timer=null;
 bestEl.textContent=String(best).padStart(4,"0");
 
