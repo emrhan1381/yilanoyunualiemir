@@ -130,7 +130,6 @@ function startOrResume(){
  reset();
 }
 startBtn.addEventListener("click",startOrResume);
-startBtn.addEventListener("pointerup",startOrResume);
 pauseBtn.addEventListener("click",togglePause);
 restartBtn && restartBtn.addEventListener("click",reset);
 document.addEventListener("keydown",e=>{
