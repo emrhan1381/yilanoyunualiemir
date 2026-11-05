@@ -26,7 +26,7 @@ function randomCell(){
  while(snake.some(s=>s.x===p.x&&s.y===p.y));
  return p;
 }
-function spawnFood(){food={...randomCell(),portrait:Math.floor(Math.random()*5)};}
+function spawnFood(){food={...randomCell()};}
 function updateStats(){
  scoreEl.textContent=String(score).padStart(4,"0");
  levelEl.textContent=String(Math.floor(score/5)+1).padStart(2,"0");
@@ -78,18 +78,37 @@ function draw(){
   ctx.strokeStyle="#172747";ctx.lineWidth=1;
   ctx.strokeRect(x*CELL+.5,y*CELL+.5,CELL-1,CELL-1);
  }
+ // Yem: fotoğraf değil, klasik retro elma.
  const fx=food.x*CELL, fy=food.y*CELL;
- ctx.fillStyle="#f4f7ff";ctx.fillRect(fx+1,fy+1,CELL-2,CELL-2);
- if(portraitSheet && portraitSheet.complete && portraitSheet.naturalWidth>=320){
-  ctx.save();ctx.beginPath();ctx.rect(fx+3,fy+3,CELL-6,CELL-6);ctx.clip();
-  ctx.drawImage(portraitSheet,food.portrait*64,0,64,64,fx+3,fy+3,CELL-6,CELL-6);
-  ctx.restore();
- }else{
-  ctx.fillStyle="#ff6b91";ctx.fillRect(fx+3,fy+3,CELL-6,CELL-6);
-  ctx.fillStyle="#172747";ctx.font="bold 17px monospace";ctx.textAlign="center";
-  ctx.fillText("A",fx+CELL/2,fy+22);
- }
- ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.strokeRect(fx+1,fy+1,CELL-2,CELL-2);
+ ctx.fillStyle="#ff4966";
+ ctx.fillRect(fx+8,fy+8,16,17);
+ ctx.fillRect(fx+5,fy+12,22,11);
+ ctx.fillStyle="#ff8a9b";
+ ctx.fillRect(fx+9,fy+10,4,5);
+ ctx.fillStyle="#73db55";
+ ctx.fillRect(fx+16,fy+5,5,4);
+ ctx.fillStyle="#70452e";
+ ctx.fillRect(fx+15,fy+4,3,5);
+ // Yılanın başı: dil çıkaran Aliemir fotoğrafı (ilk portre).
+ // Gövde: diğer Aliemir fotoğrafları; her parça bir kare.
+ snake.forEach((part,i)=>{
+  const px=part.x*CELL+2,py=part.y*CELL+2;
+  const faceIndex=i===0?0:1+((i-1)%4);
+  if(portraitSheet && portraitSheet.complete && portraitSheet.naturalWidth>=320){
+   ctx.save();
+   ctx.beginPath();
+   ctx.rect(px,py,CELL-4,CELL-4);
+   ctx.clip();
+   ctx.drawImage(portraitSheet,faceIndex*64,0,64,64,px,py,CELL-4,CELL-4);
+   ctx.restore();
+  }else{
+   ctx.fillStyle=i===0?"#a5f36b":"#70ce43";
+   ctx.fillRect(px,py,CELL-4,CELL-4);
+  }
+  ctx.strokeStyle=i===0?"#ffe5a3":"#9bf06e";
+  ctx.lineWidth=i===0?2:1;
+  ctx.strokeRect(px+.5,py+.5,CELL-5,CELL-5);
+ });
  snake.forEach((part,i)=>{
   const px=part.x*CELL+2,py=part.y*CELL+2;
   ctx.fillStyle=i===0?"#a5f36b":"#70ce43";ctx.fillRect(px,py,CELL-4,CELL-4);
