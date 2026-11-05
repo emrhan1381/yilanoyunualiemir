@@ -1,0 +1,23 @@
+*{box-sizing:border-box}
+:root{color-scheme:dark;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+body{margin:0;min-height:100vh;background:#08122f;color:#dce7ff;display:grid;place-items:center;padding:18px}
+.game-shell{width:min(100%,900px)}
+.topbar{height:62px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;background:#1c2b50;border:3px solid #344a78;border-bottom:0;border-radius:13px 13px 0 0;box-shadow:0 5px 20px #0005}
+.stat{display:flex;gap:8px;align-items:baseline;font-size:clamp(12px,2.3vw,18px);color:#9eb5e5}
+.stat strong{font-size:clamp(17px,3vw,25px);color:#f2f6ff;letter-spacing:1px}
+.board-wrap{position:relative;border:3px solid #344a78;border-top:2px solid #344a78;border-radius:0 0 13px 13px;overflow:hidden;background:#172747;box-shadow:0 12px 30px #0005}
+canvas{display:block;width:100%;height:auto;aspect-ratio:25/15;image-rendering:pixelated}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:#07112dcc;padding:16px}
+.overlay.hidden{display:none}
+.panel{width:min(100%,360px);text-align:center;padding:28px 20px;background:#1b2c51;border:2px solid #496397;border-radius:14px;box-shadow:0 12px 30px #0008}
+.panel h1{margin:0 0 12px;font-size:clamp(22px,5vw,32px);letter-spacing:2px;color:#8de45e}
+.panel p{color:#c0cdec;line-height:1.5}
+button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:12px 18px;background:#83d94d;color:#10220b;font-weight:900;touch-action:manipulation}
+button:active{transform:scale(.96)}
+.controls-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;color:#9eb5e5;font-size:13px}
+.secondary{background:#24385f;color:#e3edff;border:1px solid #496397;padding:10px 13px}
+.mobile-controls{display:none;margin:18px auto 8px;width:190px;gap:7px;align-items:center;flex-direction:column}
+.middle-controls{display:flex;gap:7px}
+.mobile-controls button{width:54px;height:48px;padding:0;background:#24385f;color:#e7efff;border:1px solid #496397;font-size:19px;touch-action:manipulation}
+.hint{text-align:center;color:#7188b5;font-size:12px;margin-top:14px}
+@media(max-width:600px){body{padding:12px}.topbar{height:54px;padding:0 9px}.stat{gap:4px}.controls-row{font-size:10px}.secondary{font-size:11px;padding:9px 8px}.mobile-controls{display:flex}.hint{font-size:10px}}
