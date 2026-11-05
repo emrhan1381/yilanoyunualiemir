@@ -11,7 +11,7 @@ let food={x:15,y:7,portrait:0},score=0,best=Number(localStorage.getItem("kafaYil
 let running=false,paused=false,timer=null;
 bestEl.textContent=String(best).padStart(4,"0");
 function randomCell(){let p;do{p={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(snake.some(s=>s.x===p.x&&s.y===p.y));return p}
-function spawnFood(){food={...randomCell(),portrait:Math.floor(Math.random()*portraits.length)}}
+function spawnFood(){food={...randomCell(),portrait:Math.floor(Math.random()*5)}}
 function updateStats(){scoreEl.textContent=String(score).padStart(4,"0");levelEl.textContent=String(Math.floor(score/5)+1).padStart(2,"0");bestEl.textContent=String(best).padStart(4,"0")}
 function schedule(){clearInterval(timer);timer=setInterval(tick,Math.max(65,155-Math.floor(score/5)*9))}
 function reset(){snake=[{x:7,y:7},{x:6,y:7},{x:5,y:7}];direction={x:1,y:0};nextDirection={x:1,y:0};score=0;paused=false;running=true;spawnFood();updateStats();overlay.classList.add("hidden");pauseBtn.textContent="Ⅱ DURAKLAT";schedule();draw()}
