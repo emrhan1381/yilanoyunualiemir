@@ -6,7 +6,7 @@ body{margin:0;min-height:100vh;background:#08122f;color:#dce7ff;display:grid;pla
 .stat{display:flex;gap:8px;align-items:baseline;font-size:clamp(12px,2.3vw,18px);color:#9eb5e5}
 .stat strong{font-size:clamp(17px,3vw,25px);color:#f2f6ff;letter-spacing:1px}
 .board-wrap{position:relative;border:3px solid #344a78;border-top:2px solid #344a78;border-radius:0 0 13px 13px;overflow:hidden;background:#172747;box-shadow:0 12px 30px #0005}
-canvas{display:block;width:100%;height:auto;aspect-ratio:20/12;image-rendering:pixelated}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;image-rendering:pixelated}
 .overlay{position:absolute;inset:0;display:grid;place-items:center;background:#07112dcc;padding:16px}
 .overlay.hidden{display:none}
 .panel{width:min(100%,360px);text-align:center;padding:28px 20px;background:#1b2c51;border:2px solid #496397;border-radius:14px;box-shadow:0 12px 30px #0008}
