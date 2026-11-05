@@ -38,7 +38,7 @@ function schedule(){
 }
 function reset(){
  clearInterval(timer);
- snake=[{x:7,y:7},{x:6,y:7},{x:5,y:7}];
+ snake=[{x:5,y:3},{x:4,y:3},{x:3,y:3}];
  direction={x:1,y:0}; nextDirection={x:1,y:0};
  score=0; paused=false; running=true;
  spawnFood(); updateStats();
