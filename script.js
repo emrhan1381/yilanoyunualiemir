@@ -2,7 +2,7 @@
 "use strict";
 const canvas=document.getElementById("game");
 const ctx=canvas && canvas.getContext("2d");
-const COLS=20, ROWS=12, CELL=40;
+const COLS=16, ROWS=9, CELL=48;
 if(!canvas || !ctx) { console.error("Oyun alanı bulunamadı."); return; }
 canvas.width=COLS*CELL; canvas.height=ROWS*CELL;
 const $=id=>document.getElementById(id);
