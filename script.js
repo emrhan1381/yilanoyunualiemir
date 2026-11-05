@@ -109,20 +109,7 @@ function draw(){
   ctx.lineWidth=i===0?2:1;
   ctx.strokeRect(px+.5,py+.5,CELL-5,CELL-5);
  });
- snake.forEach((part,i)=>{
-  const px=part.x*CELL+2,py=part.y*CELL+2;
-  ctx.fillStyle=i===0?"#a5f36b":"#70ce43";ctx.fillRect(px,py,CELL-4,CELL-4);
-  if(i===0){
-   ctx.fillStyle="#183016";
-   if(direction.x!==0){
-    ctx.fillRect(px+(direction.x===1?CELL-10:6),py+8,3,3);
-    ctx.fillRect(px+(direction.x===1?CELL-10:6),py+CELL-13,3,3);
-   }else{
-    ctx.fillRect(px+8,py+(direction.y===1?CELL-10:6),3,3);
-    ctx.fillRect(px+CELL-13,py+(direction.y===1?CELL-10:6),3,3);
-   }
-  }
- });
+
 }
 function changeDirection(dir){
  const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
