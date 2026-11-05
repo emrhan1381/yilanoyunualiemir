@@ -5,7 +5,7 @@ canvas.width=COLS*CELL;canvas.height=ROWS*CELL;
 const scoreEl=document.getElementById("score"),bestEl=document.getElementById("best"),levelEl=document.getElementById("level");
 const overlay=document.getElementById("overlay"),titleEl=document.getElementById("overlay-title"),textEl=document.getElementById("overlay-text");
 const startBtn=document.getElementById("start-btn"),pauseBtn=document.getElementById("pause-btn");
-const portraits=Array.from({length:5},(_,i)=>{const im=new Image();im.src=`assets/kafa${i+1}.jpg`;return im;});
+const portraitSheet=document.getElementById("portrait-sheet");
 let snake=[{x:7,y:7},{x:6,y:7},{x:5,y:7}],direction={x:1,y:0},nextDirection={x:1,y:0};
 let food={x:15,y:7,portrait:0},score=0,best=Number(localStorage.getItem("kafaYilaniRekor")||0);
 let running=false,paused=false,timer=null;
@@ -26,10 +26,9 @@ ctx.strokeStyle="#172747";ctx.lineWidth=1;ctx.strokeRect(x*CELL+.5,y*CELL+.5,CEL
 // Yem: fotoğrafı tüm kareye sığdır, belirgin çerçeveyle göster.
 const fx=food.x*CELL,fy=food.y*CELL;
 ctx.fillStyle="#f4f7ff";ctx.fillRect(fx+1,fy+1,CELL-2,CELL-2);
-const portrait=portraits[food.portrait];
-if(portrait.complete&&portrait.naturalWidth){
+if(portraitSheet.complete&&portraitSheet.naturalWidth){
 ctx.save();ctx.beginPath();ctx.rect(fx+3,fy+3,CELL-6,CELL-6);ctx.clip();
-ctx.drawImage(portrait,fx+3,fy+3,CELL-6,CELL-6);ctx.restore();
+ctx.drawImage(portraitSheet,food.portrait*64,0,64,64,fx+3,fy+3,CELL-6,CELL-6);ctx.restore();
 }else{
 ctx.fillStyle="#ff6b91";ctx.fillRect(fx+3,fy+3,CELL-6,CELL-6);
 ctx.fillStyle="#172747";ctx.font="bold 17px monospace";ctx.textAlign="center";ctx.fillText("A",fx+CELL/2,fy+22)
@@ -47,4 +46,4 @@ document.addEventListener("keydown",e=>{const keys={ArrowUp:"up",w:"up",ArrowDow
 document.querySelectorAll("[data-dir]").forEach(btn=>btn.addEventListener("pointerdown",e=>{e.preventDefault();changeDirection(btn.dataset.dir)}));
 startBtn.addEventListener("click",()=>{if(running&&paused){paused=false;overlay.classList.add("hidden");pauseBtn.textContent="Ⅱ DURAKLAT"}else reset()});
 pauseBtn.addEventListener("click",togglePause);document.getElementById("restart-btn").addEventListener("click",reset);
-portraits.forEach(im=>{im.onload=()=>draw();im.onerror=()=>draw()});spawnFood();updateStats();draw();
+portraitSheet.onload=()=>draw();portraitSheet.onerror=()=>draw();spawnFood();updateStats();draw();
